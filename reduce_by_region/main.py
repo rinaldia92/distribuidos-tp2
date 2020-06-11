@@ -20,7 +20,6 @@ class ReducerRegions(object):
         logging.info("Start consuming")
         self.receive_queue.consume(self._callback)
         three_regions = self._calculate_three_regions() 
-        logging.info(three_regions)
         self.send_queue.send(json.dumps(three_regions))
         logging.info("Sending EOM to queues")
         self.send_queue.send_eom()

@@ -19,7 +19,6 @@ class ReducerByDate(object):
     def run(self):
         logging.info("Start consuming")
         self.receive_queue.consume(self._callback)
-        logging.info(self.total)
         self.send_queue.send(json.dumps(self.total))
         logging.info("Sending EOM to queues")
         self.send_queue.send_eom()
