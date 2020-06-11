@@ -16,10 +16,10 @@
    - [1- Objetivo](#1--objetivo)
    - [2- Vista Logica](#2--vista-logica)
    - [3- Vista de Desarrollo](#3--vista-de-desarrollo)
-   - [4- Vista de Proceso](#2--vista-de-proceso)
-   - [5- Vista Fisica](#2--vista-fisica)
-   - [6- Casos de uso](#3--casos-de-uso)
-   - [7- Cosas a mejorar](#4--cosas-a-mejorar)
+   - [4- Vista de Proceso](#4--vista-de-proceso)
+   - [5- Vista Fisica](#5--vista-fisica)
+   - [6- Casos de uso](#6--casos-de-uso)
+   - [7- Cosas a mejorar](#7--cosas-a-mejorar)
 
 
 ## 1- Objetivo
