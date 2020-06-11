@@ -44,7 +44,6 @@ class Queues(object):
         for i in range(number_of_queues):
             queue = Queue("{}_{}".format(queue_name, i+1), host, producers)
             self.queues.append(queue)
-        # self.queues = [ Queue("{}{}".format(queue_name, i+1), host, producers) for i in range(number_of_queues) ]
         self.message_count = 0
 
     def send(self, msg):

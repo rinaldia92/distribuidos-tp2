@@ -9,8 +9,6 @@ from middleware.log import config_log
 LAT = 0
 LONG = 1
 
-NUM_COLUMS = 2
-
 REGION = 0
 LAT_REGION = 1
 LONG_REGION = 2
@@ -55,21 +53,17 @@ class DistanceCalculator(object):
 
         body_values = decoded_body.rstrip().split(",")
 
-        if len(body_values) != NUM_COLUMS:
-            self.log_counter += 1
-            return
+        self.log_counter += 1
 
         lat = float(body_values[LAT])
         long = float(body_values[LONG])
         
         region = self.haversine.calculate_location(lat, long)
 
-        # if self.log_counter % LOG_FREQUENCY == 0:
-        #     logging.info("Received line [%d] Date %s Case %s", self.log_counter, date, case)
-        # logging.info("SENDING MESSAGE: {}".format(region))
+        if self.log_counter % LOG_FREQUENCY == 0:
+            logging.info("Received line [%d] Lat %s, Long %s", self.log_counter, lat, long)
         self.send_queues.send(region)
         
-        self.log_counter += 1
 
 if __name__ == '__main__':
 
