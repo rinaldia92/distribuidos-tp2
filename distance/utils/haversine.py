@@ -25,14 +25,3 @@ class Haversine(object):
         distances = list(map(lambda x: (x, self._haversine(lat, long, self.regions[x]['lat'], self.regions[x]['long'])), locations))
         minimum = min(distances, key = lambda d: d[1])
         return minimum[0]
-
-
-# regions = { "Abruzzo": { "lat": 42.35122196, "long": 13.39843823 },
-# "Basilicata": { "lat": 40.63947052, "long": 15.80514834},
-# "Calabria":	{ "lat": 38.90597598, "long": 16.59440194 } }
-
-# hav = Haversine(regions)
-
-# reg = hav.calculate_location(37.4460356640154, 13.5672757849516)
-
-# print(reg)

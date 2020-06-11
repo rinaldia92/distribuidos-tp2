@@ -5,6 +5,10 @@ default: docker-compose-up
 
 all:
 
+init:
+	python3 docker_compose_generator.py
+.PHONY: init
+
 docker-image:
 	docker build -f ./middleware/Dockerfile -t middleware-base .
 	docker build -f ./middleware/rabbitmq/Dockerfile -t rabbitmq-healthy .
