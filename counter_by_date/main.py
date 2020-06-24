@@ -32,26 +32,29 @@ class CounterCases(object):
     def _callback(self, ch, method, properties, body):
         decoded_body = body.decode('UTF-8')
 
-        splitted_body = decoded_body.split(',')
-        date = splitted_body[0]
-        date = date.split()[0]
-        case = splitted_body[1]
-
-        self.log_counter += 1
-       
-        if date not in self.counter:
-            self.counter[date] = { 'positive_cases': 0, 'decease_cases': 0 }
-
-        if case == POSITIVE:
-            self.counter[date]['positive_cases'] += 1
-        elif case == DECEASE:
-            self.counter[date]['decease_cases'] += 1
-        else:
-            return
+        splitted_body = decoded_body.split(';')
         
-        if self.log_counter % LOG_FREQUENCY == 0:
-            logging.info("Received line [%d] Date %s Case %s", self.log_counter, date, case)
-            self._send()
+        for element in splitted_body:
+            splitted_element = element.split(',')
+            date = splitted_element[0]
+            date = date.split()[0]
+            case = splitted_element[1]
+
+            self.log_counter += 1
+        
+            if date not in self.counter:
+                self.counter[date] = { 'positive_cases': 0, 'decease_cases': 0 }
+
+            if case == POSITIVE:
+                self.counter[date]['positive_cases'] += 1
+            elif case == DECEASE:
+                self.counter[date]['decease_cases'] += 1
+            else:
+                return
+            
+            if self.log_counter % LOG_FREQUENCY == 0:
+                logging.info("Received line [%d] Date %s Case %s", self.log_counter, date, case)
+                self._send()
 
     def _send(self):
         for date, cases in self.counter.items():

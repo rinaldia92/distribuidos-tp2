@@ -28,7 +28,6 @@ class End(object):
         with open(self.file_path, "a") as file:
             file.write(decoded_body)
             file.write('\n')
-        
 
 if __name__ == '__main__':
     config_log("END")

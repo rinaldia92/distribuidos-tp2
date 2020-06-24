@@ -32,7 +32,7 @@ class CounterByRegion(object):
         if self.log_counter % LOG_FREQUENCY == 0:
             logging.info("Received line [%d] Region %s", self.log_counter, region)
             self._send()
-    
+
     def _send(self):
         for region, cases in self.counter.items():
             self.send_queue.send('{},{}'.format(region,cases))

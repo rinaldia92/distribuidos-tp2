@@ -28,6 +28,7 @@ class ReducerPercentage(object):
 
         logging.info('Positive cases: {}'.format(self.positive_cases))
         logging.info('Decease cases: {}'.format(self.decease_cases))
+        logging.info('Percentge: {}'.format(percentage))
         self.send_queue.send("Percentage: {}".format(percentage))
 
         logging.info("Sending EOM to queues")
@@ -44,7 +45,6 @@ class ReducerPercentage(object):
         self.decease_cases += int(deceases)
 
         self.log_counter += 1
-
 
 if __name__ == '__main__':
     host = os.environ['HOST']

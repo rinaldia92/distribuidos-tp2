@@ -51,19 +51,19 @@ class DistanceCalculator(object):
     def _callback(self, ch, method, properties, body):
         decoded_body = body.decode('UTF-8')
 
-        body_values = decoded_body.rstrip().split(",")
+        splitted_body = decoded_body.split(';')
+        for element in splitted_body:
+            body_values = element.split(",")
+            self.log_counter += 1
 
-        self.log_counter += 1
+            lat = float(body_values[LAT])
+            long = float(body_values[LONG])
+            
+            region = self.haversine.calculate_location(lat, long)
 
-        lat = float(body_values[LAT])
-        long = float(body_values[LONG])
-        
-        region = self.haversine.calculate_location(lat, long)
-
-        if self.log_counter % LOG_FREQUENCY == 0:
-            logging.info("Received line [%d] Lat %s, Long %s", self.log_counter, lat, long)
-        self.send_queues.send(region)
-        
+            if self.log_counter % LOG_FREQUENCY == 0:
+                logging.info("Received line [%d] Lat %s, Long %s", self.log_counter, lat, long)
+            self.send_queues.send(region)
 
 if __name__ == '__main__':
 

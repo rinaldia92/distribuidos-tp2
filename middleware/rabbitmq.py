@@ -6,7 +6,7 @@ class Queue(object):
     def __init__(self, queue_name, host, producers = 1):
         self.connection_host = host
         self.queue = queue_name
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(self.connection_host, heartbeat=1000, blocked_connection_timeout=500))
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(self.connection_host, heartbeat=1000, blocked_connection_timeout=1000))
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue=self.queue, durable=True, arguments={ "max-length": 100000 })
         self.channel.basic_qos(prefetch_count=1)

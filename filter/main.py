@@ -40,25 +40,37 @@ class FilterParser(object):
     def _callback(self, ch, method, properties, body):
         decoded_body = body.decode('UTF-8')
 
-        body_values = decoded_body.rstrip().split(",")
+        body_values = decoded_body.rstrip().split(";")
 
-        self.log_counter += 1
+        counter_array = []
+        counter_by_date_array = []
+        distance_array = []
 
-        date = body_values[DATE]
-        
-        case = body_values[CASE]
+        for element in body_values:
+            splitted = element.split(',')
 
-        lat = body_values[LAT]
-        long = body_values[LONG]
+            self.log_counter += 1
 
-        if self.log_counter % LOG_FREQUENCY == 0:
-            logging.info("Received line [%d] Case %s", self.log_counter, decoded_body)
-        
-        self.counter_queues.send(case)
-        self.counter_by_date_queues.send("{},{}".format(date, case))
-        
-        if case == POSITIVE:
-            self.distance_queues.send("{},{}".format(lat, long))
+            date = splitted[DATE]
+            
+            case = splitted[CASE]
+
+            lat = splitted[LAT]
+            long = splitted[LONG]
+
+            if self.log_counter % LOG_FREQUENCY == 0:
+                logging.info("Received line [%d] Case %s", self.log_counter, element)
+                logging.info(counter_array)
+            
+            counter_array.append(case)
+            counter_by_date_array.append("{},{}".format(date, case))
+            if case == POSITIVE:
+                distance_array.append("{},{}".format(lat, long))
+
+        self.counter_queues.send(';'.join(counter_array))
+        self.counter_by_date_queues.send(';'.join(counter_by_date_array))
+        if len(distance_array) > 0:
+            self.distance_queues.send(';'.join(distance_array))
 
 if __name__ == '__main__':
 

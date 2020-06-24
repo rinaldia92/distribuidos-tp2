@@ -26,7 +26,7 @@ def write_rabbit_service(file):
     file.write('      retries: 5\n')
     file.write('\n')
 
-def write_unique_service(file, image_name, config_name, args):
+def write_unique_service(file, image_name, config_name, args, end = False):
     generate_config_file('{}_config.env'.format(config_name), args)
     file.write("  {}:\n".format(image_name))
     file.write('    container_name: {}\n'.format(image_name))
@@ -39,8 +39,18 @@ def write_unique_service(file, image_name, config_name, args):
     file.write('    links:\n')
     file.write('      - rabbitmq\n')
     file.write('    depends_on:\n')
-    file.write('      rabbitmq:\n')
-    file.write('        condition: service_healthy\n')
+    if not end:
+        file.write('      rabbitmq:\n')
+        file.write('        condition: service_healthy\n')
+    else:
+        for i in range(args['filter_parser_workers']):
+            file.write('      - filter-parser-{}\n'.format(i+1))  
+        for i in range(args['counter_workers']):
+            file.write('      - counter-{}\n'.format(i+1))
+        for i in range(args['counter_by_date_workers']):
+            file.write('      - counter-by-date-{}\n'.format(i+1))
+        for i in range(args['distance_workers']):
+            file.write('      - distance-{}\n'.format(i+1))
     file.write('\n')
 
 def write_worker_service(file, image_name, config_name, id, args):
@@ -65,7 +75,7 @@ def generate_docker_compose_file(args):
         write_header(docker_compose_file)
         write_rabbit_service(docker_compose_file)
 
-        write_unique_service(docker_compose_file, 'init', 'init', args)
+        write_unique_service(docker_compose_file, 'init', 'init', args, True)
 
         for i in range(args['filter_parser_workers']):
             write_worker_service(docker_compose_file, 'filter-parser', 'filter_parser', i+1, args)
