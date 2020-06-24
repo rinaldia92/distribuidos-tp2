@@ -19,15 +19,21 @@ class CasesReader(object):
 
     def start(self):
         case_number = 0
+        cases_accum = []
         with open(self.file_path, "r") as cases:
             next(cases) #skip headers
             
             for case in cases:
-                self.queues.send(case)
+                cases_accum.append(case)
                 case_number += 1
+                if (len(cases_accum) == 10):
+                    self.queues.send(';'.join(cases_accum))    
+                    cases_accum = []
                 if (case_number % LOG_FREQUENCY == 0):
                     logging.info("Sending case [%d] %s", case_number, case)
                     time.sleep(5)
+        if (len(cases_accum) > 0):
+            self.queues.send(';'.join(cases_accum))           
         logging.info("Cases sended: {}".format(case_number))
         logging.info("Sending EOM")
         self.queues.send_eom()
