@@ -14,25 +14,47 @@
 ## Indice:
 
    - [1- Objetivo](#1--objetivo)
-   - [2- Vista Logica](#2--vista-logica)
-   - [3- Vista de Desarrollo](#3--vista-de-desarrollo)
-   - [4- Vista de Proceso](#4--vista-de-proceso)
-   - [5- Vista Fisica](#5--vista-fisica)
-   - [6- Casos de uso](#6--casos-de-uso)
-   - [7- Cosas a mejorar](#7--cosas-a-mejorar)
+      - [1.1- Requerimientos funcionales](#11--requerimientos-funcionales)
+      - [1.2- Requerimientos no funcionales](#11--requerimientos-no-funcionales)
+   - [2- Casos de uso](#2--casos-de-uso)
+   - [3- Vista Logica](#3--vista-logica)
+   - [4- Vista de Desarrollo](#4--vista-de-desarrollo)
+   - [5- Vista de Proceso](#5--vista-de-proceso)
+   - [6- Vista Fisica](#6--vista-fisica)
+   - [7- Modo de uso](#7--modo-de-uso)
+   - [8- Cosas a mejorar](#8--cosas-a-mejorar)
 
 
 ## 1- Objetivo
 
-Se solicita un sistema distribuido que procese estadísticas de datos individuales sobre casos positivos y decesos con info geo-espacial.
-Retornando:
+### 1.1- Requerimientos funcionales
+
+Los requerimientos funcionales del correspondiente proyecto son:
+* Se solicita un sistema distribuido que procese estadísticas de datos individuales sobre casos positivos y decesos con info geo-espacial.
+* La información es relevada in-situ y luego ingresada al sistema por lotes; indicando día, latitud y longitud de la muestra.
+* Se debe reportar:
+  * Totales de nuevos casos positivos y decesos por día.
+  * Listado de las 3 regiones con más casos positivos.
+  * Porcentaje de decesos respecto de cantidad de casos positivos detectados.
+
+### 1.2- Requerimientos no funcionales
+
+Los requerimientos no funcionales del correspondiente proyecto son:
+* Dada la ausencia de plataformas GIS, se define la pertenencia de una muestra a cierta región como aquella que minimice la distancia en Km al polo poblacional.
+* A fin de determinar distancias entre puntos geo-espaciales, se permite el uso del método de haversine. 
+* Se debe soportar el incremento de los elementos de cómputo para escalar los volúmenes de información a procesar.
+* De ser necesaria una comunicación basada en grupos, se requiere la definición de un middleware.
+
+## 2- Casos de uso
+
+Como fue explicado en los objetivos hay 3 casos de uso:
 * Totales de nuevos casos positivos y decesos por día.
 * Listado de las 3 regiones con más casos positivos.
 * Porcentaje de decesos respecto de cantidad de casos positivos detectados.
 
-&nbsp;
+<img src="/images/casosdeuso.svg">
 
-## 2- Vista Logica
+## 3- Vista Logica
 
 Se modeló al sistema como un **pipeline**, en el cual en cada etapa se procesa la informacion recibida de la etapa anterior y se la envia a la etapa siguiente.
 Se realizó el siguiente **DAG** para mostrar como es el sistema.
@@ -52,7 +74,7 @@ Detalle de los nodos del **DAG**:
 * Total By Region: Encargado de recibir la cantidad de positivos por region parciales de **Distance**, las acumula y calcula las 3 regiones con mas casos positivos y las envia al nodo final.
 * End: Encagargado de recibir los resultados totales.
 
-## 3- Vista de Desarrollo
+## 4- Vista de Desarrollo
 
 Este sistema posee 12 módulos, de los cuales 11 son de para cada uno de los nodos y uno de **middleware** para realizar la comunicación entre cada uno de estos módulos.
 
@@ -70,20 +92,21 @@ En el siguiente diagrama de actividades se puede observar la coordinación entre
 
 <img src="/images/actividades.svg">
 
-## 5- Vista Fisica
+## 6- Vista Fisica
 
 Todos los procesos del pipeline se ejecutan en su propio container de docker, para comunicarse entre si se utilizan las colas de **RabbitMQ** cuyo servidor se encuentra en otro container.
 
 <img src="/images/despliegue.svg">
 
-## 6- Casos de uso
+## 7- Modo de uso
 
-Como fue explicado en los objetivos hay 3 casos de uso:
-* Totales de nuevos casos positivos y decesos por día.
-* Listado de las 3 regiones con más casos positivos.
-* Porcentaje de decesos respecto de cantidad de casos positivos detectados.
+Se cuenta con un Makefile para ejecutar el proyecto. Dicho Makefile cuenta con distintas opciones:
+- make init: Crea el docker-compose.yaml y las variables de entorno necesarias.
+- make docker-compose-up: Para buildear, crear (recrear) y arrancar los distintos containers.
+- make docker-compose-down: Para detener y remover los containers.
+- make docker-compose-logs: Para revisar los logs.
 
-## 7- Cosas a mejorar
+## 8- Cosas a mejorar
 
 Las principales cosas a mejorar son:
 * Mejorar el middleware para no necesitar saber la cantidad de workers.
