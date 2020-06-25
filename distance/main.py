@@ -52,6 +52,7 @@ class DistanceCalculator(object):
         decoded_body = body.decode('UTF-8')
 
         splitted_body = decoded_body.split(';')
+        regions = []
         for element in splitted_body:
             body_values = element.split(",")
             self.log_counter += 1
@@ -59,11 +60,11 @@ class DistanceCalculator(object):
             lat = float(body_values[LAT])
             long = float(body_values[LONG])
             
-            region = self.haversine.calculate_location(lat, long)
+            regions.append(self.haversine.calculate_location(lat, long))
 
-            if self.log_counter % LOG_FREQUENCY == 0:
-                logging.info("Received line [%d] Lat %s, Long %s", self.log_counter, lat, long)
-            self.send_queues.send(region)
+        if self.log_counter % LOG_FREQUENCY == 0:
+            logging.info("Received line [%d] Lat %s, Long %s", self.log_counter, lat, long)
+        self.send_queues.send(';'.join(regions))
 
 if __name__ == '__main__':
 

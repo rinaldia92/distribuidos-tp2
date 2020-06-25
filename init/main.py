@@ -27,10 +27,10 @@ class CasesReader(object):
                 case_stripped = case.rstrip()
                 cases_accum.append(case_stripped)
                 case_number += 1
-                if (len(cases_accum) == 20):
+                if len(cases_accum) == 10:
                     self.queues.send(';'.join(cases_accum))    
                     cases_accum = []
-                if (case_number % LOG_FREQUENCY == 0):
+                if case_number % LOG_FREQUENCY == 0:
                     logging.info("Sending case [%d] %s", case_number, case_stripped)
                     time.sleep(5)
         if (len(cases_accum) > 0):

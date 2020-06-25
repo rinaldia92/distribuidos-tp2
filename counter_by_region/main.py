@@ -24,14 +24,15 @@ class CounterByRegion(object):
         logging.info("Finish")
 
     def _callback(self, ch, method, properties, body):
-        region = body.decode('UTF-8')
+        region_decoded = body.decode('UTF-8')
+        region_splitted = region_decoded.split(';')
+        for region in region_splitted:
+            self.log_counter += 1
+            self.counter[region] = self.counter.get(region, 0) + 1
 
-        self.log_counter += 1
-        self.counter[region] = self.counter.get(region, 0) + 1
-
-        if self.log_counter % LOG_FREQUENCY == 0:
-            logging.info("Received line [%d] Region %s", self.log_counter, region)
-            self._send()
+            if self.log_counter % LOG_FREQUENCY == 0:
+                logging.info("Received line [%d] Region %s", self.log_counter, region)
+                self._send()
 
     def _send(self):
         for region, cases in self.counter.items():
