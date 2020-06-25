@@ -60,7 +60,6 @@ class FilterParser(object):
 
             if self.log_counter % LOG_FREQUENCY == 0:
                 logging.info("Received line [%d] Case %s", self.log_counter, element)
-                logging.info(counter_array)
             
             counter_array.append(case)
             counter_by_date_array.append("{},{}".format(date, case))
