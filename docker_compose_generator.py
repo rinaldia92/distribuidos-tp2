@@ -1,3 +1,5 @@
+import os
+
 def generate_config_file(name, args, id = 1):
     with open('config/{}'.format(name), 'w') as config_file:
         config_file.write('HOST=rabbitmq\n')
@@ -70,7 +72,9 @@ def write_worker_service(file, image_name, config_name, id, args):
     file.write('        condition: service_healthy\n')
     file.write('\n')
 
-def generate_docker_compose_file(args):
+def generate_docker_compose_file(args):   
+    if not os.path.exists('config'):
+        os.mkdir('config')
     with open("docker-compose.yaml", "w") as docker_compose_file:
         write_header(docker_compose_file)
         write_rabbit_service(docker_compose_file)
