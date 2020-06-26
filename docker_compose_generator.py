@@ -109,10 +109,10 @@ def generate_docker_compose_file(args):
 
 if __name__ == '__main__':
     workers = {
-        'filter_parser_workers': 1,
-        'counter_workers': 1,
-        'counter_by_date_workers': 1,
-        'counter_by_region_workers': 1,
+        'filter_parser_workers': 2,
+        'counter_workers': 2,
+        'counter_by_date_workers': 2,
+        'counter_by_region_workers': 2,
         'distance_workers': 2,
         'reducer_workers': 3 
     }

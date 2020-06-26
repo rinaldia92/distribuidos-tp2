@@ -28,11 +28,11 @@ class ReducerRegions(object):
     def _callback(self, ch, method, properties, body):
         decoded_body = body.decode('UTF-8')
         body_values = decoded_body.split(',')
-
         region = body_values[REGION]
         positives = int(body_values[POSITIVES])
         
         self.total[region] = self.total.get(region, 0) + positives
+        ch.basic_ack(delivery_tag = method.delivery_tag)
 
     def _calculate_three_regions(self):
         items = self.total.items();

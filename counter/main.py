@@ -26,7 +26,7 @@ class CounterCases(object):
         logging.info("Start consuming")
         self.receive_queue.consume(self._callback)
         self.send_queue.send('{},{}'.format(self.positive_cases, self.decease_cases))
-        logging.info("Sending EOM to queues")
+        logging.info("Sending EOM to queue")
         self.send_queue.send_eom()
         logging.info("Finish")
 
@@ -51,6 +51,7 @@ class CounterCases(object):
                 self.send_queue.send('{},{}'.format(self.positive_cases, self.decease_cases))        
                 self.positive_cases = 0
                 self.decease_cases = 0
+        ch.basic_ack(delivery_tag = method.delivery_tag)
 
 if __name__ == '__main__':
     host = os.environ['HOST']

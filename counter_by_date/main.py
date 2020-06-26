@@ -20,18 +20,16 @@ class CounterCases(object):
         self.receive_queue = receive_queue
         self.log_counter = 0
         self.counter = {}
-
     def run(self):
         logging.info("Start consuming")
         self.receive_queue.consume(self._callback)
         self._send()
-        logging.info("Sending EOM to queues")
+        logging.info("Sending EOM to queue")
         self.send_queue.send_eom()
         logging.info("Finish")
 
     def _callback(self, ch, method, properties, body):
         decoded_body = body.decode('UTF-8')
-
         splitted_body = decoded_body.split(';')
         
         for element in splitted_body:
@@ -55,6 +53,7 @@ class CounterCases(object):
             if self.log_counter % LOG_FREQUENCY == 0:
                 logging.info("Received line [%d] Date %s Case %s", self.log_counter, date, case)
                 self._send()
+        ch.basic_ack(delivery_tag = method.delivery_tag)
 
     def _send(self):
         for date, cases in self.counter.items():

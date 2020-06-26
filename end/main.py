@@ -16,7 +16,6 @@ class End(object):
         self.file_path = file_path
         self.queue = rabbitmq_queue
 
-
     def run(self):
         logging.info("Start consuming")
         self.queue.consume(self._callback)
@@ -24,10 +23,10 @@ class End(object):
 
     def _callback(self, ch, method, properties, body):
         decoded_body = body.decode('UTF-8')
-        
         with open(self.file_path, "a") as file:
             file.write(decoded_body)
             file.write('\n')
+        ch.basic_ack(delivery_tag = method.delivery_tag)
 
 if __name__ == '__main__':
     config_log("END")

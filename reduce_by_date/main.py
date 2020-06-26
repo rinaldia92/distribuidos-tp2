@@ -27,7 +27,6 @@ class ReducerByDate(object):
     def _callback(self, ch, method, properties, body):
         decoded_body = body.decode('UTF-8')
         body_values = decoded_body.split(',')
-        
         date = body_values[DATE]
         positives = int(body_values[POSITIVES])
         deceases = int(body_values[DECEASES])
@@ -37,6 +36,7 @@ class ReducerByDate(object):
 
         self.total[date]['positive_cases'] += positives
         self.total[date]['decease_cases'] += deceases
+        ch.basic_ack(delivery_tag = method.delivery_tag)
 
 if __name__ == '__main__':
     host = os.environ['HOST']

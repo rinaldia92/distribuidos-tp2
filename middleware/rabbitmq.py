@@ -24,12 +24,13 @@ class Queue(object):
         def _wrapper(ch, method, properties, body):
             if body.decode('UTF-8') == EOM:
                 self.producers -= 1
+                ch.basic_ack(delivery_tag = method.delivery_tag)
                 if self.producers == 0:
                     self._stop_consume()
                 return
             callback(ch,method,properties,body)
 
-        self.tag = self.channel.basic_consume(queue=self.queue, auto_ack=True, on_message_callback=_wrapper)
+        self.tag = self.channel.basic_consume(queue=self.queue, on_message_callback=_wrapper)
         self.channel.start_consuming()
 
     def _stop_consume(self):

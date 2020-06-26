@@ -39,7 +39,6 @@ class FilterParser(object):
 
     def _callback(self, ch, method, properties, body):
         decoded_body = body.decode('UTF-8')
-
         body_values = decoded_body.rstrip().split(";")
 
         counter_array = []
@@ -70,6 +69,7 @@ class FilterParser(object):
         self.counter_by_date_queues.send(';'.join(counter_by_date_array))
         if len(distance_array) > 0:
             self.distance_queues.send(';'.join(distance_array))
+        ch.basic_ack(delivery_tag = method.delivery_tag)
 
 if __name__ == '__main__':
 

@@ -38,13 +38,13 @@ class ReducerPercentage(object):
 
     def _callback(self, ch, method, properties, body):
         decoded_body = body.decode('UTF-8')
-
         positives, deceases = decoded_body.split(',')
 
         self.positive_cases += int(positives)
         self.decease_cases += int(deceases)
 
         self.log_counter += 1
+        ch.basic_ack(delivery_tag = method.delivery_tag)
 
 if __name__ == '__main__':
     host = os.environ['HOST']

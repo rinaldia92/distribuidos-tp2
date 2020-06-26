@@ -37,7 +37,7 @@ class DistanceCalculator(object):
         logging.info("Sending EOM to queues")
         self.send_queues.send_eom()
         logging.info("Finish")
-
+        
     def _callback_regions(self, ch, method, properties, body):
         decoded_body = body.decode('UTF-8')
         body_values = decoded_body.rstrip().split(",")
@@ -47,6 +47,7 @@ class DistanceCalculator(object):
         long = float(body_values[LONG_REGION])
         if region not in self.regions:
             self.regions[region] = { 'lat': lat, 'long': long }
+        ch.basic_ack(delivery_tag = method.delivery_tag)
 
     def _callback(self, ch, method, properties, body):
         decoded_body = body.decode('UTF-8')
@@ -65,6 +66,7 @@ class DistanceCalculator(object):
         if self.log_counter % LOG_FREQUENCY == 0:
             logging.info("Received line [%d] Lat %s, Long %s", self.log_counter, lat, long)
         self.send_queues.send(';'.join(regions))
+        ch.basic_ack(delivery_tag = method.delivery_tag)
 
 if __name__ == '__main__':
 

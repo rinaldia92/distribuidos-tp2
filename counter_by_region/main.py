@@ -19,7 +19,7 @@ class CounterByRegion(object):
         logging.info("Start consuming")
         self.receive_queue.consume(self._callback)
         self._send()
-        logging.info("Sending EOM to queues")
+        logging.info("Sending EOM to queue")
         self.send_queue.send_eom()
         logging.info("Finish")
 
@@ -33,7 +33,7 @@ class CounterByRegion(object):
             if self.log_counter % LOG_FREQUENCY == 0:
                 logging.info("Received line [%d] Region %s", self.log_counter, region)
                 self._send()
-
+        ch.basic_ack(delivery_tag = method.delivery_tag)
     def _send(self):
         for region, cases in self.counter.items():
             self.send_queue.send('{},{}'.format(region,cases))

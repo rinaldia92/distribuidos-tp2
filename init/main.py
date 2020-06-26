@@ -32,7 +32,6 @@ class CasesReader(object):
                     cases_accum = []
                 if case_number % LOG_FREQUENCY == 0:
                     logging.info("Sending case [%d] %s", case_number, case_stripped)
-                    time.sleep(5)
         if (len(cases_accum) > 0):
             self.queues.send(';'.join(cases_accum))           
         logging.info("Cases sended: {}".format(case_number))
